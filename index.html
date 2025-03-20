@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Spacing Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .calculator {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Seed Spacing Calculator</h1>
+        <div class="input-group">
+            <label for="targetLbs">Target lbs/acre</label>
+            <input type="number" id="targetLbs" step="0.1" min="0" required>
+        </div>
+        <div class="input-group">
+            <label for="seedWeight">Seed Weight (oz)</label>
+            <input type="number" id="seedWeight" step="0.1" min="0" required>
+        </div>
+        <div class="input-group">
+            <label for="rowSpacing">Row Spacing (inches)</label>
+            <input type="number" id="rowSpacing" step="0.1" min="0" required>
+        </div>
+        <button onclick="calculateSpacing()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateSpacing() {
+            // Get input values
+            const targetLbs = parseFloat(document.getElementById('targetLbs').value);
+            const seedWeight = parseFloat(document.getElementById('seedWeight').value);
+            const rowSpacing = parseFloat(document.getElementById('rowSpacing').value);
+
+            // Validate inputs
+            if (!targetLbs || !seedWeight || !rowSpacing) {
+                document.getElementById('result').innerHTML = 'Please fill all fields';
+                return;
+            }
+
+            // Calculate seeds per acre
+            const seedWeightLbs = seedWeight / 16; // oz to lbs
+            const seedsPerAcre = targetLbs / seedWeightLbs;
+
+            // Calculate total row length in an acre
+            const acreWidthFeet = 208.71; // Assuming square acre (sqrt(43560))
+            const acreWidthInches = acreWidthFeet * 12;
+            const numRows = acreWidthInches / rowSpacing;
+            const totalRowLengthFeet = numRows * acreWidthFeet;
+
+            // Calculate spacing
+            const seedsPerFoot = seedsPerAcre / totalRowLengthFeet;
+            const spacingInches = 12 / seedsPerFoot;
+
+            // Display result
+            document.getElementById('result').innerHTML = 
+                `Required Spacing: ${spacingInches.toFixed(2)} inches between seeds`;
+        }
+    </script>
+</body>
+</html>
